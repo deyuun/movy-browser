@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { createWatchlist, deleteWatchlist, getUserWatchlist, renameWatchlist } from '../api/watchlistService';
 import { useNavigate } from 'react-router';
-import { Plus } from 'lucide-react';
+import { Plus, Pencil, X } from 'lucide-react';
 import { PageLoader, WatchlistGridLoader } from '../components/Spinner';
 
 export default function Watchlists() {
@@ -218,13 +218,13 @@ export default function Watchlists() {
                           className='bg-purple-800/60 text-purple-200 hover:bg-purple-700 hover:text-white px-2 py-1 rounded-md transition'
                           title="Rename Watchlist"
                         >
-                          ✎
+                          <Pencil size={15} />
                         </button>
                         <button 
                           onClick={() => setConfirmModal({ open: true, watchlistId: list._id })}
                           className="bg-purple-800/60 text-purple-200 hover:bg-purple-700 hover:text-white px-2 py-1 rounded-md transition"
                           title='Delete Watchlist'>
-                            ✕
+                          <X size={15} />
                         </button>
                       </div>
                     </div>

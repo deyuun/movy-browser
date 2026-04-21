@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { fetchPopularMovies } from '../services/movieService';
 import MovieGrid from '../components/MovieGrid';
+import { TrendingUp } from 'lucide-react';
 
 export default function Popular() {
   const [movies, setMovies] = useState([]);
@@ -17,7 +18,10 @@ export default function Popular() {
   }, []);
   return (
     <div className='p-4 text-white text-3xl'>
-      <h1 className='font-bold text-center mb-5'>🔥 Popular</h1>
+      <h1 className='font-bold text-center mb-5 flex items-center justify-center gap-2'>
+        <TrendingUp size={28} className="text-orange-400" />
+        Popular
+      </h1>
       <MovieGrid movies={movies}/>
     </div>
   );
