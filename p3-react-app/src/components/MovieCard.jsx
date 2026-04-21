@@ -1,4 +1,5 @@
 import { Link } from 'react-router';
+import { Star, Calendar } from 'lucide-react';
 
 export default function MovieCard({movie}) {
 
@@ -26,12 +27,18 @@ export default function MovieCard({movie}) {
       />
       <div className='flex flex-col flex-grow items-center justify-center text-center'>
         <div>
-        <h2 className='text-lg font-semibold tex-center mb-2'>{movie.title}</h2>
+          <h2 className='text-lg font-semibold text-center mb-2'>{movie.title}</h2>
 
-        <p className="text-sm text-gray-300 flex justify-center items-center gap-2 mt-auto">
-          <span className="bg-gray-700 px-2 py-0.5 mt-2 rounded-full"> ⭐ {starRating}</span>
-          <span className="bg-gray-700 px-2 py-0.5 mt-2 rounded-full">📅 {releaseDate}</span>
-        </p>
+          <p className="text-sm text-gray-300 flex justify-center items-center gap-2 mt-auto">
+              <span className="bg-gray-700 px-2 py-0.5 mt-2 rounded-full flex items-center gap-1">
+                <Star size={14} className="text-yellow-400 fill-yellow-400" />
+                {starRating}
+              </span>
+            <span className="bg-gray-700 px-2 py-0.5 mt-2 rounded-full flex items-center gap-1">
+                <Calendar size={14} className="text-gray-400" />
+                {releaseDate}
+            </span>
+          </p>
         </div>
       </div>
     </div>
