@@ -1,5 +1,18 @@
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
+async function tmdbGet(path, params = {}) {
+  const url = new URL(`https://api.themoviedb.org/3${path}`);
+  url.searchParams.set('api_key', API_KEY);
+  Object.entries(params).forEach(([key, value]) => url.searchParams.set(key, value));
+
+  const response = await fetch(url.toString());
+
+  if (!response.ok) {
+    throw new Error(`TMDB error on ${path}: ${response.status}`);
+  }
+  return response.json();
+}
+
 export async function fetchPopularMovies() {
   const response = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`);
   if (!response.ok) {
