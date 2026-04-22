@@ -44,6 +44,16 @@ export async function fetchUpcomingMovies(page = 1) {
   };
 }
 
+export async function fetchTrendingMovies(timeSetting = 'day', page = 1) {
+  
+  const data = await tmdbGet(`/trending/movie/${timeSetting}`, { page });
+  return {
+    results: data.results,
+    total_pages: data.total_pages
+  };
+}
+
+// single movie
 export async function fetchMovieDetails(id) {
   const response = await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}`);
   if (!response.ok) {
@@ -59,8 +69,6 @@ export async function fetchMovieProviders(id, country='PH') {
     throw new Error('Failed to fetch Movie Providers');
   }
   const data = await response.json();
-  console.log('PH:', data.results?.['PH']?.flatrate);
-  console.log('US:', data.results?.['US']?.flatrate);
   let providers = data.results?.[country];
   if(!providers || !providers.flatrate || providers.flatrate.length === 0) {
     providers = data.results['US'];
@@ -69,15 +77,19 @@ export async function fetchMovieProviders(id, country='PH') {
   if (providers && providers.flatrate) {
     return providers.flatrate;
   }
-  console.warn('No flatrate providers found for this movie');
   return [];
 }
 
-export async function fetchTrendingMovies(timeSetting = 'day') {
-  const response = await fetch(`https://api.themoviedb.org/3/trending/movie/${timeSetting}?api_key=${API_KEY}`)
-  if (!response.ok) {
-    throw new Error(`Failed to fetch trending movies for ${timeSetting}`);
-  }
-  const data = await response.json();
-  return data.results;
+// trailers
+export async function fetchMovieTrailers(id) {
+  const data = await tmdbGet(`/movie/${id}/videos`);
+  // prefer official YouTube trailers; fall back to teasers
+  const videos = data.results ?? [];
+  const trailers = videos.filter(
+    v => v.site === 'YouTube' && v.type === 'Trailer'
+  );
+  const teasers = videos.filter(
+    v => v.site === 'YouTube' && v.type === 'Teaser'
+  );
+  return trailers.length ? trailers : teasers;
 }
