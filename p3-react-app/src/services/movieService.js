@@ -13,41 +13,35 @@ async function tmdbGet(path, params = {}) {
   return response.json();
 }
 
-export async function fetchPopularMovies() {
-  const response = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch popular movies'); 
-  }
-  const data = await response.json();
-  return data.results;
-  
+export async function fetchPopularMovies(page = 1) {  
+  const data = await tmdbGet('/movie/popular', { page });
+  return {
+    results: data.results, total_pages: data.total_pages
+  };
 }
 
-export async function fetchNowPlayingMovies() {
-  const response = await fetch(`https://api.themoviedb.org/3/movie/now_playing?api_key=${API_KEY}`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch now playing movies');
-  }
-  const data = await response.json();
-  return data.results;
+export async function fetchNowPlayingMovies(page = 1) {
+  const data = await tmdbGet('/movie/now_playing', { page });
+  return {
+    results: data.results,
+    total_pages: data.total_pages
+  };
 }
 
-export async function fetchTopRatedMovies() {
-  const response = await fetch(`https://api.themoviedb.org/3/movie/top_rated?api_key=${API_KEY}`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch top rated movies');
-  }
-  const data = await response.json();
-  return data.results;
+export async function fetchTopRatedMovies(page = 1) {
+  const data = await tmdbGet('/movie/top_rated', { page });
+  return {
+    results: data.results,
+    total_pages: data.total_pages
+  };
 }
 
-export async function fetchUpcomingMovies() {
-  const response = await fetch(`https://api.themoviedb.org/3/movie/upcoming?api_key=${API_KEY}`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch upcoming movies');
-  }
-  const data = await response.json();
-  return data.results;
+export async function fetchUpcomingMovies(page = 1) {
+  const data = await tmdbGet('/movie/upcoming', { page });
+  return {
+    results: data.results,
+    total_pages: data.total_pages,
+  };
 }
 
 export async function fetchMovieDetails(id) {
