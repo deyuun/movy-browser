@@ -1,34 +1,33 @@
-import { useEffect, useState } from 'react';
-import { fetchTopRatedMovies } from '../services/movieService';
+import { Star } from 'lucide-react';
 import MovieGrid from '../components/MovieGrid';
+import LoadMoreSpinner from '../components/LoadMoreSpinner';
 import { PageLoader } from '../components/Spinner';
+import useInfiniteScroll from '../hooks/useInfiniteScroll';
+import { fetchTopRatedMovies } from '../services/movieService';
 
 export default function TopRated() {
-  const [movies, setMovies] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { movies, loading, loadingMore, hasMore, sentinelRef } =
+    useInfiniteScroll(fetchTopRatedMovies, []);
 
-  useEffect(() => {
-    async function getTopRatedMovies() {
-      try {
-        const data = await fetchTopRatedMovies();
-        setMovies(data);
-      } catch (error) {
-        console.error('Error fetching TopRated movies:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    getTopRatedMovies();
-  }, []);
   return (
     <main className='py-10 min-h-screen'>
       <div className='p-4 text-white'>
-        <h1 className='font-bold text-center mb-6 text-3xl'>Top Rated Movies</h1>
+        <h1 className='font-bold text-center mb-6 text-3xl flex items-center justify-center gap-2'>
+          <Star size={28} className="text-yellow-400 fill-yellow-400" />
+          Top Rated Movies
+        </h1>
 
         {loading ? (
           <PageLoader />
         ) : (
-          <MovieGrid movies={movies} />
+          <>
+            <MovieGrid movies={movies} />
+            <LoadMoreSpinner
+              loadingMore={loadingMore}
+              hasMore={hasMore}
+              sentinelRef={sentinelRef}
+            />
+          </>
         )}
       </div>
     </main>
