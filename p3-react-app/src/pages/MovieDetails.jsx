@@ -1,6 +1,6 @@
   import { useEffect, useState } from 'react';
   import { useNavigate, useParams } from 'react-router';
-  import { fetchMovieDetails, fetchMovieProviders } from '../services/movieService';
+  import { fetchMovieDetails, fetchMovieProviders, fetchMovieTrailers } from '../services/movieService';
   import { addMovieToWatchlist, getUserWatchlist, syncMovieToBackend } from '../api/watchlistService';
   const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
   import { Plus } from 'lucide-react';
@@ -17,6 +17,10 @@
     const [toast, setToast] = useState(null);
     const [toastVisible, setToastVisible] = useState(false);
 
+    const [trailers, setTrailers] = useState([]);
+    const [showTrailer, setShowTrailer] = useState(false);
+    const [activeTrailerIndex, setActiveTrailerIndex] = useState(0);
+
     useEffect(() => {
       if (toast) {
         const time = setTimeout(() => setToast(null), 3000);
@@ -32,11 +36,13 @@
           setMovie(movieData); // show movie immediately
 
           // fetch providers + watchlist in background
-          fetchMovieProviders(id).then(data => setProviders(data || []));
-          const token = localStorage.getItem('token');
-          if (token) {
-            getUserWatchlist().then(data => setWatchlist(data.watchlists || []));
-          }
+          Promise.all([
+            fetchMovieProviders(id).then(data => setProviders(data || [])),
+            fetchMovieTrailers(id).then(data => setTrailers(data || [])),
+            localStorage.getItem('token')
+              ? getUserWatchlist().then(data => setWatchlist(data.watchlist || []))
+              : Promise.resolve(),
+          ]);
         } catch (error) {
           console.error(error);
         } finally {
