@@ -22,12 +22,11 @@
     const [activeTrailerIndex, setActiveTrailerIndex] = useState(0);
 
     useEffect(() => {
-      if (toast) {
+      if (!toast) return; 
         const time = setTimeout(() => setToast(null), 3000);
-
-        return () => {clearTimeout(time)};
-      }
-    })
+        return () => clearTimeout(time);
+      
+    }, [toast])
 
     useEffect(() => {
       async function fetchDetails(id) {
