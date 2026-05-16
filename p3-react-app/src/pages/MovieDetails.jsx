@@ -40,7 +40,7 @@ import TrailerModal from '../components/TrailerModal';
             fetchMovieProviders(id).then(data => setProviders(data || [])),
             fetchMovieTrailers(id).then(data => setTrailers(data || [])),
             localStorage.getItem('token')
-              ? getUserWatchlist().then(data => setWatchlist(data.watchlist || []))
+              ? getUserWatchlist().then(data => setWatchlist(data.watchlists || []))
               : Promise.resolve(),
           ]);
         } catch (error) {
@@ -88,6 +88,7 @@ import TrailerModal from '../components/TrailerModal';
         setTimeout(() => setToastVisible(false), 3000);
       } finally {
         setAddingToWatchlist(false);
+        setShowWatchlistMenu(false);
       }
     } 
     
