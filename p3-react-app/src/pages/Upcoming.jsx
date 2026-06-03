@@ -1,34 +1,34 @@
-import { useEffect, useState } from 'react';
 import { fetchUpcomingMovies } from '../services/movieService';
 import MovieGrid from '../components/MovieGrid';
 import { PageLoader } from '../components/Spinner';
+import { CalendarDays } from 'lucide-react';
+import LoadMoreSpinner from '../components/LoadMoreSpinner';
+import useInfiniteScroll from '../hooks/useInfiniteScroll';
 
 export default function Upcoming() {
-  const [movies, setMovies] = useState([]);
-  const [loading, setLoading] = useState(true)
-  useEffect(() => {
-    async function getUpcomingMovies() {
-      try {
-        const data = await fetchUpcomingMovies();
-        setMovies(data);
-      } catch (error) {
-        console.error('Error fetching Upcoming movies:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    getUpcomingMovies();
-  }, []);
+  const { movies, loading, loadingMore, hasMore, sentinelRef } =
+    useInfiniteScroll(fetchUpcomingMovies, []);
+  
   return (
     <main className='py-10 min-h-screen'>
       <div className='p-4 text-white'>
-        <h1 className='font-bold text-center mb-6 text-3xl'>Upcoming Movies</h1>
+        <h1 className='font-bold text-center mb-6 text-3xl flex items-center justify-center gap-2'>
+          <CalendarDays size={28} className='text-blue-400' />
+          Upcoming Movies
+        </h1>
         
         {loading ? 
           (
             <PageLoader />
           ) : (
-            <MovieGrid movies={movies}/>
+            <>
+              <MovieGrid movies={movies}/>
+              <LoadMoreSpinner
+                loadingMore={loadingMore}
+                hasMore={hasMore}
+                sentinelRef={sentinelRef}
+              />
+            </>
           )}
       </div>
     </main>
