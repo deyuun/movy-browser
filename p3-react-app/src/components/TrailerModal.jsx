@@ -33,37 +33,43 @@ export default function TrailerModal({ trailers, onClose, activeIndex, setActive
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-4xl"
+        className="relative w-full max-w-4xl bg-gray-900 rounded-xl overflow-hidden"
         onClick={(e) => e.stopPropagation()} // don't close when clicking the modal itself
       >
-        {/* close button */}
-        <button
-          onClick={onClose}
-          className="absolute -top-10 right-0 text-white hover:text-gray-300 transition"
-          aria-label="Close trailer"
-        >
-          <X size={28} />
-        </button>
 
         {/* trailer tabs (only shown when there are multiple trailers) */}
-        {trailers.length > 1 && (
-          <div className="flex gap-2 mb-3 flex-wrap">
-            {trailers.map((t, i) => (
-              <button
-                key={t.id}
-                onClick={() => setActiveIndex(i)}
-                className={`px-3 py-1 rounded text-sm font-medium transition ${
-                  i === activeIndex
-                    ? 'bg-purple-600 text-white'
-                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                }`}
-              >
-                {t.name || `Trailer ${i + 1}`}
-              </button>
-            ))}
-          </div>
-        )}
+        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-700">
+  
+          {trailers.length > 1 ? (
+            <div className="flex gap-2 flex-wrap">
+              {trailers.map((t, i) => (
+                <button
+                  key={t.id}
+                  onClick={() => setActiveIndex(i)}
+                  className={`px-3 py-1 rounded text-sm font-medium transition ${
+                    i === activeIndex
+                      ? 'bg-purple-600 text-white'
+                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                  }`}
+                >
+                  {t.name || `Trailer ${i + 1}`}
+                </button>
+              ))}
+            </div>
+          ) : (
+            <span className="text-sm text-gray-300 font-medium truncate max-w-xs">
+              {trailer.name}
+            </span>
+          )}
 
+          <button
+            onClick={onClose}
+            className="ml-4 shrink-0 text-gray-400 hover:text-white transition p-1 rounded hover:bg-gray-700"
+            aria-label="Close trailer"
+          >
+            <X size={20} />
+          </button>
+        </div>
         {/* 16:9 responsive iframe */}
         <div className="relative w-full" style={{ paddingTop: '56.25%' }}>
           <iframe
