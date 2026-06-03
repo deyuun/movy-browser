@@ -121,23 +121,11 @@ import TrailerModal from '../components/TrailerModal';
         )}
         <div className="p-4 text-white max-w-4xl mx-auto">
           {/* ── title row ── */}
-          <div className="flex justify-between items-start mb-4 gap-4 flex-wrap">
+          <div className="flex flex-col mb-4">
             <h1 className="text-3xl font-bold">{movie.title}</h1>
 
-            <div className='flex items-center gap-3 flex-wrap'>
-             {/* watch trailer button */}
-             {trailers.length > 0 && (
-                <button
-                  onClick={() => setShowTrailer(true)}
-                  className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition font-semibold"
-                >
-                  <Play size={18} className='fill-white' />
-                  Watch Trailer
-                </button>
-             )}
-            </div>
-            
-            {localStorage.getItem('token') && (
+            <div className='flex items-center gap-3 mt-3 flex-wrap'>
+             {localStorage.getItem('token') && (
               <div className="relative">
                 <button
                   onClick={() => setShowWatchlistMenu(!showWatchlistMenu)}
@@ -179,6 +167,7 @@ import TrailerModal from '../components/TrailerModal';
                 )}
               </div>
             )}
+            </div>
           </div>
           
           <div className='relative'>
@@ -197,6 +186,19 @@ import TrailerModal from '../components/TrailerModal';
                 {toast}
               </div>
             )}
+
+            {/* watch trailer button */}
+            <div className='flex justify-center mb-6'>
+              {trailers.length > 0 && (
+                  <button
+                    onClick={() => setShowTrailer(true)}
+                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition font-semibold"
+                  >
+                    <Play size={18} className='fill-white' />
+                    Watch Trailer
+                  </button>
+              )}
+             </div>
           </div>
 
           <p className="mb-10 text-3xl text-gray-300">{movie.tagline}</p>
