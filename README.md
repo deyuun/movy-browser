@@ -1,17 +1,24 @@
 # Movy Browser
 
-Movy Browser is my personal React app for browsing movies. It’s a simple, interactive app where you can explore popular, top-rated, and upcoming movies right from your browser. I built it to practice React, component-based architecture, and working with external APIs.
+Movy Browser is my personal full stack app for browsing movies. I started it as a simple React practice project but kept building, it now has user authentication, personal wathclists, infinite scroll, and a trailer player. I built it to get hands-on experience with React, Node.js, REST APIs, and connecting a frontend to my own backend.
 
 ## Features
-- Browse popular, top-rated, and upcoming movies
-- View movie details like overview, rating, and release date
+- Browse popular, top-rated, and upcoming movies and trending movies
+- Watch trailers directly in the app via a YouTube embed modal
+- Search movies by title
+- View full movie details like overview, rating, and release date, tagline, and streaming providers
+- Register and log in with JWT authentication
+- Create, rename, and delete personal watchlists
+- Add and remove movies from your watchlist
 - Clean and responsive UI
 - Component-based React structure
 
 ## Tech Stack
 - JavaScript
 - HTML & CSS
-- React.js + Tailwind CSS
+- React.js + Vite
+- Tailwind CSS
+- React Router v7
 - The Movie Database API (TMDB API)
 
 
@@ -26,7 +33,13 @@ Movy Browser is my personal React app for browsing movies. It’s a simple, inte
    ```bash
    VITE_TMDB_API_KEY=your_tmdb_api_key_here
    VITE_MOVY_API=https://movyapi.up.railway.app/api
-4. Start the development server:
+4. Add your `.env` file to the backend in the root:
+   ```bash
+   MONGO_URI=your_mongodb_uri
+   JWT_SECRET=your_jwt_secret
+   TMDB_API_KEY=your_tmdb_api_key_here
+   PORT=5000
+5. Start the development server:
    ```bash
    npm run dev
 
