@@ -1,20 +1,22 @@
-import Navbar from './Navbar';
-import logo from '../assets/logo.png'
 import { Link } from 'react-router';
+import { Clapperboard } from 'lucide-react';
+import Navbar from './Navbar';
 
-
-export default function Header({token, setToken}) {
+export default function Header({ token, setToken }) {
   return (
-    <header className='flex items-center justify-between px-4 py-2 shadow-md bg-gray-900 dark:bg-gray-900 sticky top-0 z-1'>
-      <div className='flex items-center space-x-3'>
-        <Link to='/'>
-          <img src={logo} className=" w-auto h-16 object-contain" />
+    <header className='movy-header'>
+      <div className='movy-header__logo-group'>
+        <Link to='/' className='movy-header__logo-link'>
+          <div className='movy-header__logo-icon'>
+            <Clapperboard size={18} strokeWidth={1.75} />
+          </div>
+          <span className='movy-header__wordmark'>
+            Movy<span className='movy-header__wordmark-dot'>.</span>
+          </span>
         </Link>
-        <Link to='/'>
-          <h1 className='text-4xl font-bold text-white'>Movy Browser</h1>
-        </Link>
-      </div>  
-      <Navbar token={token} setToken={setToken}/> 
+      </div>
+
+      <Navbar token={token} setToken={setToken} />
     </header>
-  )
+  );
 }
