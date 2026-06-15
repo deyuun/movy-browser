@@ -1,79 +1,119 @@
 import { Link, useLocation, useNavigate } from 'react-router';
-import { Search as SearchIcon } from 'lucide-react';
+import {
+  Search,
+  LogOut,
+  BookMarked,
+  User,
+} from 'lucide-react';
 import { useState } from 'react';
 
-export default function Navbar({token, setToken}) {
+const NAV_LINKS = [
+  { to: '/',          label: 'Home'      },
+  { to: '/top-rated', label: 'Top Rated' },
+  { to: '/upcoming',  label: 'Upcoming'  },
+  { to: '/trending',  label: 'Trending'  },
+];
+
+export default function Navbar({ token, setToken }) {
   const [searchQuery, setSearchQuery] = useState('');
-  const navigate = useNavigate();
-  const location = useLocation();
+  const [searchOpen, setSearchOpen] = useState(false);
+  const navigate   = useNavigate();
+  const location   = useLocation();
 
   function handleLogout() {
-    localStorage.removeItem("token");
+    localStorage.removeItem('token');
     setToken(null);
     navigate('/');
   }
 
-  const handleSearch = (e) => {
+  function handleSearch(e) {
     e.preventDefault();
     if (searchQuery.trim()) {
-      // Safely encode user input for the URL (handles spaces & special characters)
       navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
       setSearchQuery('');
+      setSearchOpen(false);
     }
-  };
-
-  let authLinks;
-  if (token) {
-    authLinks = ( 
-      <>
-        <Link to="/watchlists" className="text-white hover:text-gray-300 font-bold h-10 flex items-center px-3">
-          My Watchlists
-        </Link>
-        <button onClick={handleLogout} className="font-bold hover:text-gray-300 bg-red-500 px-3 py-1 rounded-full">
-          Logout
-        </button>
-      </>
-    );
-  } else {
-    authLinks = (
-      <>
-        <Link to="/login" className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-3 py-1 rounded-full transition">
-          Login
-        </Link>
-        <Link to="/register" className="bg-purple-500 hover:bg-purple-600 text-white font-semibold px-3 py-1 rounded-full transition">
-          Register
-        </Link>
-      </>
-    )
   }
-  
-  return (
-    <nav className="h-16 px-4 text-white bg-gray-800 flex items-center justify-between">
-      <div className="flex items-center gap-4">
-        <Link to="/" className='text-white hover:text-gray-300 font-bold'>Home</Link>
-        <Link to="/top-rated" className='text-white hover:text-gray-300 font-bold'>Top Rated</Link>
-        <Link to="/upcoming" className='text-white hover:text-gray-300 font-bold'>Upcoming</Link>
-        <Link to="/trending" className='text-white hover:text-gray-300 font-bold'>Trending</Link>
-      </div>
 
-      {location.pathname !== '/search' && (
-        <form onSubmit={handleSearch} className="flex-1 max-w-md mx-4">
-          <div className="relative">
-            <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search movies..."
-              className="w-full pl-10 pr-4 py-2 rounded-full bg-gray-700 text-white text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-          </div>
-        </form>
+  const isSearch = location.pathname === '/search';
+
+  return (
+    <nav className='movy-nav'>
+      {/* page links */}
+      <ul className='movy-nav__links'>
+        {NAV_LINKS.map(({ to, label }) => (
+          <li key={to}>
+            <Link
+              to={to}
+              className={`movy-nav__link${location.pathname === to ? ' movy-nav__link--active' : ''}`}
+            >
+              {label}
+            </Link>
+          </li>
+        ))}
+        {token && (
+          <li>
+            <Link
+              to='/watchlists'
+              className={`movy-nav__link${location.pathname.startsWith('/watchlists') ? ' movy-nav__link--active' : ''}`}
+            >
+              Watchlists
+            </Link>
+          </li>
+        )}
+      </ul>
+
+      {/* search */}
+      {!isSearch && (
+        <div className='movy-nav__search-wrap'>
+          {searchOpen ? (
+            <form onSubmit={handleSearch} className='movy-nav__search-form'>
+              <Search size={14} className='movy-nav__search-icon' strokeWidth={2} />
+              <input
+                autoFocus
+                type='text'
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                onBlur={() => !searchQuery && setSearchOpen(false)}
+                placeholder='Search movies…'
+                className='movy-nav__search-input'
+              />
+            </form>
+          ) : (
+            <button
+              onClick={() => setSearchOpen(true)}
+              className='movy-nav__search-trigger'
+              aria-label='Open search'
+            >
+              <Search size={14} strokeWidth={2} />
+              <span>Search</span>
+            </button>
+          )}
+        </div>
       )}
 
-      <div className="flex items-center gap-4">
-        {authLinks}
+      {/* auth */}
+      <div className='movy-nav__auth'>
+        {token ? (
+          <>
+            <Link to='/watchlists' className='movy-nav__icon-btn' aria-label='My watchlists'>
+              <BookMarked size={16} strokeWidth={1.75} />
+            </Link>
+            <button onClick={handleLogout} className='movy-nav__icon-btn movy-nav__icon-btn--danger' aria-label='Log out'>
+              <LogOut size={16} strokeWidth={1.75} />
+            </button>
+          </>
+        ) : (
+          <>
+            <Link to='/login' className='movy-btn movy-btn--ghost'>
+              Login
+            </Link>
+            <Link to='/register' className='movy-btn movy-btn--primary'>
+              Register
+            </Link>
+          </>
+        )}
       </div>
-    </nav>    
+    </nav>
   );
 }
