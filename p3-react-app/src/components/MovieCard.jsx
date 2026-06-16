@@ -20,9 +20,9 @@ export default function MovieCard({movie}) {
           loading='lazy' 
         />
         <div className='movie-card__overlay'>
-          <h2 className='movie-card__title'>movie.title</h2>
+          <h2 className='movie-card__title'>{movie.title}</h2>
           <div className='movie-card__meta'>
-            <span className='movie-card__badge movie-card__badge--start'>
+            <span className='movie-card__badge movie-card__badge--star'>
               <Star size={11} strokeWidth={0} className='movie-card__star-icon'/>
               {starRating}
             </span>
