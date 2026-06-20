@@ -525,7 +525,7 @@ button:focus-visible {
   width:      100%;
   height:     100%;
   object-fit: cover;
-  opacity:    .18;
+  opacity:    .28;
   filter:     blur(1px);
 }
 .detail-backdrop__gradient {
@@ -567,7 +567,7 @@ button:focus-visible {
 .detail-layout {
   display:   grid;
   gap:       40px;
-  grid-template-columns: 220px 1fr;
+  grid-template-columns: 270px 1fr;
   align-items: start;
 }
 @media (max-width: 700px) {
@@ -734,7 +734,7 @@ button:focus-visible {
 /* sections */
 .detail-section { margin-bottom: 24px; }
 .detail-section__label {
-  font-size:      .6875rem;
+  font-size:      .7875rem;
   font-weight:    700;
   letter-spacing: .1em;
   text-transform: uppercase;
