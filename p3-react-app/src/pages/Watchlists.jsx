@@ -1,240 +1,241 @@
 import { useCallback, useEffect, useState } from 'react';
 import { createWatchlist, deleteWatchlist, getUserWatchlist, renameWatchlist } from '../api/watchlistService';
 import { useNavigate } from 'react-router';
-import { Plus, Pencil, X } from 'lucide-react';
+import { Plus, Pencil, X, Check, Film } from 'lucide-react';
 import { PageLoader, WatchlistGridLoader } from '../components/Spinner';
 
 export default function Watchlists() {
-  const [watchlists, setWatchlist] = useState([]);
-  const [loading, setLoading] = useState(true)
+  const [watchlists, setWatchlists]           = useState([]);
+  const [loading, setLoading]                 = useState(true);
+  const [isCreating, setIsCreating]           = useState(false);
+  const [newLabel, setNewLabel]               = useState('');
+  const [editId, setEditId]                   = useState(null);
+  const [editLabel, setEditLabel]             = useState('');
+  const [toast, setToast]                     = useState(null);
+  const [confirmModal, setConfirmModal]       = useState({ open: false, watchlistId: null });
   const navigate = useNavigate();
 
-  const [isCreatingWatchlist, setIsCreatingWatchlist] = useState(false);
-  const [newWatchlistLabel, setNewWatchlistLabel] = useState('');
+  const fetchWatchlists = useCallback(async () => {
+    try {
+      const data = await getUserWatchlist();
+      setWatchlists(data.watchlists || []);
+    } catch (err) {
+      if (err.message.includes('401') || err.message.includes('403')) navigate('/login');
+    } finally {
+      setLoading(false);
+    }
+  }, [navigate]);
 
-  const [editId, setEditId] = useState(null);
-  const [editLabel, setEditLabel] = useState('');
-  const [toast, setToast] = useState(null);
-
-  const [confirmModal, setConfirmModal] = useState({
-    open: false,
-    watchlistId: null,
-  })
-
-
-  const fetchWatchlists = useCallback(async ()  => {
-      try {
-        const data = await getUserWatchlist();
-        setWatchlist(data.watchlists || []);
-      } catch (error) {
-        console.error('Error fetching watchlists:', error);
-        if (error.message.includes('401') || error.message.includes('403')) {
-          navigate('/login'); 
-        }
-      } finally {
-        setLoading(false);
-      }
-    }, [navigate]);
+  useEffect(() => { fetchWatchlists(); }, [fetchWatchlists]);
 
   useEffect(() => {
-    if (toast) {
-      const timer = setTimeout(() => setToast(null), 3000);
-      return () => clearTimeout(timer);
-    }
+    if (!toast) return;
+    const t = setTimeout(() => setToast(null), 3000);
+    return () => clearTimeout(t);
   }, [toast]);
 
-  useEffect(() => {
-    fetchWatchlists();
-  }, [fetchWatchlists]);
-
-  const handleCreateWatchlist = async (e) => {
-    e.preventDefault()
-    if (!newWatchlistLabel.trim()) {
-      return;
-    }
-
+  const handleCreate = async (e) => {
+    e.preventDefault();
+    if (!newLabel.trim()) return;
     try {
-      await createWatchlist(newWatchlistLabel);
-      setToast('Watchlist created!')
-      setNewWatchlistLabel('');
-      setIsCreatingWatchlist(false);
+      await createWatchlist(newLabel.trim());
+      setToast('Watchlist created');
+      setNewLabel('');
+      setIsCreating(false);
       await fetchWatchlists();
-    } catch (error) {
-      console.error('Error creating watchlist', error);
+    } catch (err) {
+      console.error(err);
     }
-  }
+  };
 
-  const handleDeleteWatchlist = async (id) => {
+  const handleDelete = async (id) => {
     try {
       await deleteWatchlist(id);
-      setToast('Your watchlist is deleted');
+      setToast('Watchlist deleted');
       fetchWatchlists();
-    } catch (error) {
-      console.error('Error deleting watchlist:', error)
+    } catch (err) {
+      console.error(err);
     }
-  }
+  };
 
-  const handleRenameWatchlist = async (id) => {
-    if (!editLabel.trim()) {
-      return
-    }
-
+  const handleRename = async (id) => {
+    if (!editLabel.trim()) return;
     try {
-      await renameWatchlist(id, editLabel);
-      setToast('Watchlist renamed!')
+      await renameWatchlist(id, editLabel.trim());
+      setToast('Watchlist renamed');
       setEditId(null);
       setEditLabel('');
       await fetchWatchlists();
-    } catch (error) {
-      console.error( error.message ||'Error renaming watchlist:', error)
+    } catch (err) {
+      console.error(err);
     }
-  }
-  
-  
+  };
+
   return (
-    <main className='min-h-screen py-10'>
-      <div className='max-w-6xl mx-auto px-4 text-white relative'>
-        {confirmModal.open && (
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100]">
-            <div className='bg-purple-950 p-6 rounded-xl shadow-xl border border-purple-700 max-w-sm w-full text-center'>
-              <h2 className="text-xl font-semibold mb-2">Delete Watchlist?</h2>
-              <p className='text-gray-300 mb-6'>This action cannot be undone</p>
-              <div className='flex justify-center gap-4'>
-                <button
-                  onClick={async () => {
-                    await handleDeleteWatchlist(confirmModal.watchlistId);
-                    setConfirmModal({open: false, watchlistId: null});
-                    
-                  }}
-                  
-                  >
-                    Yes, Delete
-                </button>
-                <button
-                  onClick={() => setConfirmModal({ open: false, watchlistId: null })}
-                  >
-                    Cancel
-                </button>
-              </div>
+    <main className='wl-page'>
+      {/* confirm delete modal */}
+      {confirmModal.open && (
+        <div className='modal-backdrop'>
+          <div className='modal'>
+            <h2 className='modal__title'>Delete watchlist?</h2>
+            <p className='modal__body'>This can't be undone.</p>
+            <div className='modal__actions'>
+              <button
+                className='movy-btn movy-btn--danger'
+                onClick={async () => {
+                  await handleDelete(confirmModal.watchlistId);
+                  setConfirmModal({ open: false, watchlistId: null });
+                }}
+              >
+                Delete
+              </button>
+              <button
+                className='movy-btn movy-btn--ghost'
+                onClick={() => setConfirmModal({ open: false, watchlistId: null })}
+              >
+                Cancel
+              </button>
             </div>
           </div>
-        )}
-        
-        {toast && (
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 bg-purple-900 px-4 py-2 rounded-lg animate-fade z-50">
-              {toast}
-            </div>
-          )}
+        </div>
+      )}
 
-        <div className='flex justify-between items-center mb-6'>
-          <h1 className='text-4xl font-bold mb-6'>Your Watchlists</h1>
-          
-          {!isCreatingWatchlist ? (
-            <button onClick={() => setIsCreatingWatchlist(true)} className='bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition'>
-              <Plus size={20}/>
-              Watchlist
+      {/* toast */}
+      {toast && <div className='page-toast'>{toast}</div>}
+
+      <div className='wl-inner'>
+        <div className='wl-header'>
+          <h1 className='wl-header__title'>Your watchlists</h1>
+
+          {!isCreating ? (
+            <button className='movy-btn movy-btn--primary' onClick={() => setIsCreating(true)}>
+              <Plus size={15} strokeWidth={2.5} />
+              New list
             </button>
           ) : (
-            <form onSubmit={handleCreateWatchlist} className='mt-4 flex gap-2'>
-              <input type='text' value={newWatchlistLabel}
-                onChange={(e) => setNewWatchlistLabel(e.target.value)}
-                placeholder='Enter watchlist name...'
-                className='flex-1 min-w-0 px-3 py-1 rounded bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-purple-500'
+            <form onSubmit={handleCreate} className='wl-create-form'>
+              <input
                 autoFocus
+                type='text'
+                value={newLabel}
+                onChange={e => setNewLabel(e.target.value)}
+                placeholder='List name…'
+                className='wl-create-input'
               />
-              <button type='submit' className='text-white px-4 py-2 rounded'>
-                Create
-              </button>
-
+              <button type='submit' className='movy-btn movy-btn--primary'>Create</button>
               <button
                 type='button'
-                onClick={() => {
-                  setIsCreatingWatchlist(false);
-                  setNewWatchlistLabel('')
-                }}
-                className='text-white px-4 py-2 rounded'
+                className='movy-btn movy-btn--ghost'
+                onClick={() => { setIsCreating(false); setNewLabel(''); }}
               >
                 Cancel
               </button>
             </form>
           )}
-
         </div>
 
-          {loading ? (
-            <WatchlistGridLoader count={15}/>
-          ) : watchlists.length === 0 ? (
-            <p>No watchlist found. Create one from a movie page!</p>
-          ) : (
-            <ul className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {watchlists.map((list) => (
-                <li
-                  key={list._id}
-                   className="bg-purple-950/50 p-4 rounded-lg border border-purple-700 hover:bg-purple-900/60 transition"
-                >
-                  {editId === list._id ? (
-                    <form
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        handleRenameWatchlist(list._id)
-                      }}
-                      className='flex gap-2 items-center w-full'
+        {loading ? (
+          <WatchlistGridLoader count={6} />
+        ) : watchlists.length === 0 ? (
+          <div className='wl-empty'>
+            <Film size={40} strokeWidth={1.25} className='wl-empty__icon' />
+            <p className='wl-empty__heading'>No lists yet</p>
+            <p className='wl-empty__sub'>Create a list and add movies from any film page.</p>
+          </div>
+        ) : (
+          <ul className='wl-grid'>
+            {watchlists.map(list => (
+              <li key={list._id} className='wl-card'>
+                {editId === list._id ? (
+                  <form
+                    onSubmit={e => { e.preventDefault(); handleRename(list._id); }}
+                    className='wl-card__rename-form'
+                  >
+                    <input
+                      autoFocus
+                      type='text'
+                      value={editLabel}
+                      onChange={e => setEditLabel(e.target.value)}
+                      onFocus={e => e.target.select()}
+                      className='wl-create-input'
+                    />
+                    <button type='submit' className='wl-card__icon-btn wl-card__icon-btn--confirm' aria-label='Save'>
+                      <Check size={14} strokeWidth={2.5} />
+                    </button>
+                    <button
+                      type='button'
+                      className='wl-card__icon-btn'
+                      aria-label='Cancel'
+                      onClick={() => { setEditId(null); setEditLabel(''); }}
                     >
-                      <input
-                        type='text'
-                        value={editLabel}
-                        onChange={(e) => setEditLabel(e.target.value)}
-                        className='flex-1 min-w-0 px-3 py-1 rounded bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-purple-500 '
-                        autoFocus
-                        onFocus={(e) => e.target.select()}
-                      />
-                      <button type='submit' className='text-green-400 hover:text-green-300 text-xl'>✔</button>
-                      <button type='button' 
-                        onClick={() => {
-                          setEditId(null);
-                          setEditLabel('');
-                        }}
-                        className='text-red-400 hover:text-red-300 text-xl'
-                      >
-                        ✕
-                      </button>
-                    </form>
-                  ) : (
-                    <div className='flex items-center'>
-                      <div
-                        onClick={() => navigate(`/watchlists/${list._id}`)}
-                        className='cursor-pointer flex-1 text-center'
-                      >
-                        <h2 className='text-xl font-semibold'>{list.name}</h2>
-                        <p className='text-gray-400'>{list.movies.length} movies</p>
-                      </div>
-                      
-                      <div className='flex flex-col gap-2 ml-2'>
-                        <button
-                          onClick={() => {
-                            setEditId(list._id);
-                            setEditLabel(list.name);
-                          }}
-                          className='bg-purple-800/60 text-purple-200 hover:bg-purple-700 hover:text-white px-2 py-1 rounded-md transition'
-                          title="Rename Watchlist"
-                        >
-                          <Pencil size={15} />
-                        </button>
-                        <button 
-                          onClick={() => setConfirmModal({ open: true, watchlistId: list._id })}
-                          className="bg-purple-800/60 text-purple-200 hover:bg-purple-700 hover:text-white px-2 py-1 rounded-md transition"
-                          title='Delete Watchlist'>
-                          <X size={15} />
-                        </button>
-                      </div>
+                      <X size={14} strokeWidth={2} />
+                    </button>
+                  </form>
+                ) : (
+                  <div
+                    className='wl-card__body'
+                    onClick={() => navigate(`/watchlists/${list._id}`)}
+                    role='button'
+                    tabIndex={0}
+                    onKeyDown={e => e.key === 'Enter' && navigate(`/watchlists/${list._id}`)}
+                  >
+                    {/* mini poster strip */}
+                    <div className='wl-card__strip'>
+                      {Array.from({ length: 4 }).map((_, i) => {
+                        const m = list.movies?.[i];
+                        return (
+                          <div key={i} className='wl-card__strip-slot'>
+                            {m?.posterPath && (
+                              <img
+                                src={`https://image.tmdb.org/t/p/w92${m.posterPath}`}
+                                alt=''
+                                className='wl-card__strip-img'
+                              />
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
-                  )}
-                </li>       
-              ))}
-            </ul>
-          )}
-        
+
+                    <div className='wl-card__info'>
+                      <span className='wl-card__name'>{list.name}</span>
+                      <span className='wl-card__count'>
+                        {list.movies?.length ?? 0} {list.movies?.length === 1 ? 'film' : 'films'}
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {editId !== list._id && (
+                  <div className='wl-card__actions'>
+                    <button
+                      className='wl-card__icon-btn'
+                      aria-label='Rename'
+                      onClick={e => {
+                        e.stopPropagation();
+                        setEditId(list._id);
+                        setEditLabel(list.name);
+                      }}
+                    >
+                      <Pencil size={13} strokeWidth={2} />
+                    </button>
+                    <button
+                      className='wl-card__icon-btn wl-card__icon-btn--delete'
+                      aria-label='Delete'
+                      onClick={e => {
+                        e.stopPropagation();
+                        setConfirmModal({ open: true, watchlistId: list._id });
+                      }}
+                    >
+                      <X size={13} strokeWidth={2} />
+                    </button>
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </main>
-  )
+  );
 }
