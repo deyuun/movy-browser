@@ -8,9 +8,9 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
 
   const currentDate = new Date().toLocaleDateString(undefined, {
+    weekday: 'long',
     month: 'long',
     day: 'numeric',
-    year: 'numeric',
   })
 
   useEffect(() => {
