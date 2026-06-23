@@ -10,11 +10,11 @@ export default function NowPlaying() {
     useInfiniteScroll(fetchNowPlayingMovies, []);
 
   return (
-    <div className='p-4 text-white text-3xl'>
-      <h1 className='font-bold text-center mb-5 flex items-center justify-center gap-2'>
-        <Film size={28} className="text-purple-400" />
-        Now Playing
-      </h1>
+    <div className='section-block'>
+      <div className='section-header'>
+        <Film size={20} strokeWidth={1.75} className='section-header__icon' />
+        <h2 className='section-title'>Now playing</h2>
+      </div>
 
       {loading ? (
         <PageLoader />
