@@ -9,6 +9,9 @@ import Login from '../pages/Login';
 import Register from '../pages/Register';
 import Watchlists from '../pages/Watchlists';
 import WatchlistDetails from '../pages/WatchlistDetails';
+import NowPlayingPage from '../pages/NowPlayingPage';
+import Popular from '../pages/Popular';
+import PopularPage from '../pages/Popularpage';
 
 
 
@@ -16,6 +19,8 @@ const AppRoutes = ({setToken}) => {
   return (
     <Routes>
       <Route path='/' element={<Home />} />
+      <Route path='/now-playing' element={<NowPlayingPage />}/>
+      <Route path='/popular' element={<PopularPage />}/>
       <Route path='/top-rated' element={<TopRated />} />
       <Route path='/upcoming' element={<Upcoming />} />
       <Route path='/movie/:id' element={<MovieDetails />} />

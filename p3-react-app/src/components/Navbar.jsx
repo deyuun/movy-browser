@@ -9,6 +9,8 @@ import { useState } from 'react';
 
 const NAV_LINKS = [
   { to: '/',          label: 'Home'      },
+  { to: '/now-playing', label: 'Now Playing' },
+  { to: '/popular', label: 'Popular' },
   { to: '/top-rated', label: 'Top Rated' },
   { to: '/upcoming',  label: 'Upcoming'  },
   { to: '/trending',  label: 'Trending'  },
