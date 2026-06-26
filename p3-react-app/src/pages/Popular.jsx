@@ -28,7 +28,7 @@ export default function Popular() {
       <div className='section-header'>
         <TrendingUp size={20} strokeWidth={1.75} className='section-header__icon' />
         <h2 className='section-title'>Popular</h2>
-        <Link to='/' className='section-see-all'>
+        <Link to='/popular' className='section-see-all'>
           See all <ArrowRight size={14} strokeWidth={2} />
         </Link>
       </div>
