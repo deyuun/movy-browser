@@ -10,12 +10,11 @@ export default function Upcoming() {
     useInfiniteScroll(fetchUpcomingMovies, []);
   
   return (
-    <main className='py-10 min-h-screen'>
-      <div className='p-4 text-white'>
-        <h1 className='font-bold text-center mb-6 text-3xl flex items-center justify-center gap-2'>
-          <CalendarDays size={28} className='text-blue-400' />
-          Upcoming Movies
-        </h1>
+    <main className='page-wrapper'>
+      <div className='section-header'>
+        <CalendarDays size={20} strokeWidth={1.75} className='section-header__icon' />
+        <h1 className='section-title'>Upcoming Movies</h1>
+      </div>
         
         {loading ? 
           (
@@ -30,7 +29,7 @@ export default function Upcoming() {
               />
             </>
           )}
-      </div>
+      
     </main>
   );
 }

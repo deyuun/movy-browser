@@ -10,26 +10,24 @@ export default function TopRated() {
     useInfiniteScroll(fetchTopRatedMovies, []);
 
   return (
-    <main className='py-10 min-h-screen'>
-      <div className='p-4 text-white'>
-        <h1 className='font-bold text-center mb-6 text-3xl flex items-center justify-center gap-2'>
-          <Star size={28} className="text-yellow-300" />
-          Top Rated Movies
-        </h1>
-
-        {loading ? (
-          <PageLoader />
-        ) : (
-          <>
-            <MovieGrid movies={movies} />
-            <LoadMoreSpinner
-              loadingMore={loadingMore}
-              hasMore={hasMore}
-              sentinelRef={sentinelRef}
-            />
-          </>
-        )}
+    <main className='page-wrapper'>
+      <div className='section-header'>
+        <Star size={20} strokeWidth={1.75} className='section-header__icon' />
+        <h1 className='section-title'>Top rated</h1>
       </div>
+
+      {loading ? (
+        <PageLoader />
+      ) : (
+        <>
+          <MovieGrid movies={movies} />
+          <LoadMoreSpinner
+            loadingMore={loadingMore}
+            hasMore={hasMore}
+            sentinelRef={sentinelRef}
+          />
+        </>
+      )}
     </main>
   );
 }

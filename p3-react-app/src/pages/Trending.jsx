@@ -23,7 +23,7 @@ export default function Trending() {
     useInfiniteScroll(fetcher, [timeSetting]);
 
   return (
-    <main className='py-10 min-h-screen'>
+    <main className='page-wrapper'>
       <div className='p-4 text-white'>
         <h1 className='font-bold text-center mb-2 text-3xl flex items-center justify-center gap-2'>
           <Flame size={28} className="text-purple-400" />
