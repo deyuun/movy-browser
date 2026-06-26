@@ -1087,3 +1087,26 @@ button:focus-visible {
 }
 .wld-card__badge--star { background: rgba(245,200,66,.15); color: #f5c842; }
 .wld-card__badge--year { background: var(--bg-hover); color: var(--text-secondary); border: 1px solid var(--border-subtle); }
+
+.section-header {
+  display:         flex;
+  align-items:     center;
+  gap:             10px;
+  margin-bottom:   20px;
+}
+
+/* push see-all to the far right */
+.section-see-all {
+  display:       inline-flex;
+  align-items:   center;
+  gap:           4px;
+  margin-left:   auto;
+  font-size:     .8125rem;
+  font-weight:   600;
+  color:         var(--purple-400);
+  transition:    color var(--transition-fast), gap var(--transition-fast);
+}
+.section-see-all:hover {
+  color: var(--purple-400);
+  gap:   7px;
+}
