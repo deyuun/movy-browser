@@ -24,27 +24,26 @@ export default function Trending() {
 
   return (
     <main className='page-wrapper'>
-      <div className='p-4 text-white'>
-        <h1 className='font-bold text-center mb-2 text-3xl flex items-center justify-center gap-2'>
-          <Flame size={28} className="text-purple-400" />
-          Trending
-        </h1>
-
-        <TimeToggle timeSetting={timeSetting} setTimeSetting={setTimeSetting} />
-
-        {loading ? (
-          <PageLoader />
-        ) : (
-          <>
-            <MovieGrid movies={movies} />
-            <LoadMoreSpinner
-              loadingMore={loadingMore}
-              hasMore={hasMore}
-              sentinelRef={sentinelRef}
-            />
-          </>
-        )}
+      <div className='section-header'>
+        <Flame size={20} strokeWidth={1.75} className='section-header__icon' />
+        <h1 className='section-title'>Trending</h1>
       </div>
+
+      <TimeToggle timeSetting={timeSetting} setTimeSetting={setTimeSetting} />
+
+      {loading ? (
+        <PageLoader />
+      ) : (
+        <>
+          <MovieGrid movies={movies} />
+          <LoadMoreSpinner
+            loadingMore={loadingMore}
+            hasMore={hasMore}
+            sentinelRef={sentinelRef}
+          />
+        </>
+      )}
+
       <ScrollTopButton />
     </main>
   );
