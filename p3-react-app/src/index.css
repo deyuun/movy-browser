@@ -1110,3 +1110,15 @@ button:focus-visible {
   color: var(--purple-400);
   gap:   7px;
 }
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  /* subtle radial glow behind the card */
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 0%, rgba(124,111,205,.1) 0%, transparent 70%),
+    var(--bg-base);
+}
